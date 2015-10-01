@@ -14,7 +14,7 @@ Prerequisites:
 * A GitHub account where the QIIME project has been forked
 * git
 
-1.  Install non-Python dependencies for numpy and qiime
+1.  Install non-Python dependencies for numpy and qiime:
 
         sudo apt-get install libfreetype6-dev libpng12-dev pkgconf libblas-dev liblapack-dev gfortran
 
@@ -23,18 +23,18 @@ Prerequisites:
         $ virtualenv -p `which python` venv
         $ source venv/bin/activate
 
-3.  Install NumPy and QIIME in the virtual environment
+3.  Install NumPy and QIIME in the virtual environment:
 
         (venv)$ pip install numpy
         (venv)$ pip install qiime
 
-4.  Test the QIIME installation
+4.  Test the QIIME installation:
 
         (venv)$ print_qiime_config.py -t
 
     You should get a bunch of information and the last line should contain an ```OK``` by itself.
     
-5.  Get the sources: Fork on Github, clone to your machine, and make sure everything is up-to-date.
+5.  Fork the QIIME project on Github, clone to your machine, and make sure everything is up-to-date:
 
         (venv)$ mkdir ~/BIOCORE
         (venv)$ cd ~/BIOCORE
@@ -42,7 +42,7 @@ Prerequisites:
         (venv)$ git remote add upstream https://github.com/biocore/qiime.git
         (venv)$ git pull upstream master
 
-6.  Create a branch to run the tests
+6.  Create a branch to run the tests:
 
         (venv)$ git checkout -b test
 
@@ -107,18 +107,79 @@ Troubleshooting failed tests
 
 ### Passing test_denoiser/test_settings.py ###
 
-1. Install GHC
+1. Install GHC.
+
+        (venv)$ sudo apt-get install ghc
 
 2. Build the FlowgramAlignment program included with qiime:
 
-        (venv)$ sudo apt-get install ghc
-        (venv)$ cd qiime/qiime/support_files/denoiser/FlowgramAlignment
+        (venv)$ cd ~/BIOCORE/qiime/qiime/support_files/denoiser/FlowgramAlignment
         (venv)$ make
 
-3. The `make` command will compile FlowAlignment and copy it to `qiime/scripts`. 
+3. The `make` command will compile FlowAlignment and copy it to `qiime/scripts`. You must add that directory to your PATH. If you are using virtualenv, this is done in the ```activate``` script.
 
 ### Passing test_workflow/test_pick_open_reference_otus.py ###
 
+1. Make sure Java works. OpenJDK will do fine.
+
+2. Download rdp_classifier-2.2 from [SourceForge](http://sourceforge.net/projects/rdp-classifier/files/rdp-classifier/rdp_classifier_2.2.zip/download) and unzip it:
+
+	(venv)$ cd ~/BIOCORE
+        (venv)$ unzip rdp_classifier-2.2.zip
+
+3. Set ```RDP_JAR_PATH``` to point to ```rdp_classifier-2.2.jar```:
+
+        export RDP_JAR_PATH=$HOME/BIOCORE/rdp_classifier_2.2/rdp_classifier-2.2.jar
+
+If using virtualenv, you should add the line above to your ```activate``` script below ```export PATH```.
+
+4. Get USEARCH 6.1.544 (beta) from [Drive5](http://www.drive5.com/usearch/download.html).
+
+5. Make sure the executable is named ```usearch61``` and has execute permission:
+
+        (venv)$ mv usearch6.1.544_i86linux32 usearch61
+        (venv)$ chmod +x usearch61
+
+6. Add the directory containing ```usearch61``` to your PATH.
+
 ### Passing test_workflow/test_ampliconnoise.py ###
 
+1. Install AmpliconNoise dependencies:
+
+        (venv)$ sudo apt-get install mpi-default-dev
+        (venv)$ sudo apt-get install mpi-default-bin
+        (venv)$ sudo apt-get install libgsl0-dev
+
+2. Download [AmpliconNoise](http://ampliconnoise.googlecode.com/files/AmpliconNoiseV1.27.tar.gz).
+
+3. Install AmpliconNoise 1.27:
+
+        (venv)$ tar xvzf AmpliconNoiseV1.27.tar.gz
+        (venv)$ cd AmpliconNoiseV1.27
+        (venv)$ make
+        (venv)$ make install
+
+4. Export the necessary environment variables. If using virtualenv, add the following lines to your ```activate``` script:
+
+        export PATH=$HOME/BIOCORE/AmpliconNoiseV1.27/Scripts:$HOME/BIOCORE/AmpliconNoiseV1.27/bin:$PATH
+        export PYRO_LOOKUP_FILE=$HOME/BIOCORE/AmpliconNoiseV1.27/Data/LookUp_E123.dat
+        export SEQ_LOOKUP_FILE=$HOME/BIOCORE/AmpliconNoiseV1.27/Data/Tran.dat"
+
 ### Passing test_parallel/test_map_reads_to_reference.py ###
+
+1. Install [BLAT](http://hgdownload.cse.ucsc.edu/admin/exe/userApps.src.tgz)
+
+2. Install [BWA](http://sourceforge.net/projects/bio-bwa/files/bwa-0.7.12.tar.bz2/download)
+
+3. Add BLAT and BWA to PATH
+
+        export PATH=$PATH:$HOME/BIOCORE/kentUtils:$HOME/BIOCORE/bwa-07.12
+
+4. Get USEARCH 5.2.236 from [Drive5](http://www.drive5.com/usearch/download.html). 
+
+5. Make sure the executable is named ```usearch``` and has execute permission:
+
+        (venv)$ mv usearch5.2.236_i86linux32 usearch
+        (venv)$ chmod +x usearch
+
+6. Add the directory containing ```usearch``` to your PATH.
